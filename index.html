@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>מערכת שכר · SOC</title>
+<meta name="theme-color" content="#0a0e14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="שכר SOC">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiB2aWV3Qm94PSIwIDAgMTgwIDE4MCI+PHJlY3Qgd2lkdGg9IjE4MCIgaGVpZ2h0PSIxODAiIHJ4PSIzOCIgZmlsbD0iIzBhMGUxNCIvPjxjaXJjbGUgY3g9IjkwIiBjeT0iNTIiIHI9IjEwIiBmaWxsPSIjMDBkOWEzIi8+PHRleHQgeD0iOTAiIHk9IjExOCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTAiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMDBkOWEzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7igqo8L3RleHQ+PHRleHQgeD0iOTAiIHk9IjE1MiIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiM3ZDhkYTMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNPQzwvdGV4dD48L3N2Zz4=">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgdmlld0JveD0iMCAwIDY0IDY0Ij48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHJ4PSIxNCIgZmlsbD0iIzBhMGUxNCIvPjxjaXJjbGUgY3g9IjMyIiBjeT0iMjAiIHI9IjQiIGZpbGw9IiMwMGQ5YTMiLz48dGV4dCB4PSIzMiIgeT0iNDQiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyMCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwMGQ5YTMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKCqjwvdGV4dD48L3N2Zz4=">
+<style>
+  :root{
+    --bg:#0a0e14;--panel:#111823;--panel-2:#0d141d;--line:#1e2a3a;--line-bright:#2a3a4f;
+    --txt:#dce6f2;--txt-dim:#7d8da3;--accent:#00d9a3;--accent-dim:#0a3d31;
+    --amber:#f5a623;--amber-dim:#3d2f0f;--red:#e05c6e;--red-dim:#3d1620;
+    --green:#3ddc84;--green-dim:#0f3d24;
+    --r100:#5b9bd5;--r120:#f5a623;--r130:#e05c6e;--r150:#a86bd8;
+    --mono:'SF Mono',ui-monospace,'Menlo','Consolas',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--bg);color:var(--txt);font-family:-apple-system,'Segoe UI','Assistant',Arial,sans-serif;font-size:16px;line-height:1.5}
+  body{padding:0 0 calc(40px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto;min-height:100vh}
+  header{padding:calc(20px + env(safe-area-inset-top)) 18px 14px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0d141d,var(--bg));position:relative}
+  header::before{content:"";position:absolute;top:0;right:0;left:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.5}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  h1{font-size:19px;font-weight:700}
+  .sub{font-family:var(--mono);font-size:11.5px;color:var(--txt-dim);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+  .monthbar{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--panel-2)}
+  .monthbar button.nav{background:var(--panel);border:1px solid var(--line-bright);color:var(--txt);width:38px;height:38px;border-radius:10px;font-size:20px;cursor:pointer;flex-shrink:0}
+  .monthbar .mlabel{flex:1;text-align:center;font-weight:700;font-size:16px;font-family:var(--mono)}
+  .monthbar .mlabel .yr{color:var(--txt-dim);font-size:13px}
+  .tabs{display:flex;border-bottom:1px solid var(--line);background:var(--panel-2);position:sticky;top:0;z-index:20;overflow-x:auto}
+  .tab{flex:1;min-width:70px;padding:12px 4px;text-align:center;font-size:13px;font-weight:600;color:var(--txt-dim);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+  .tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+  .view{display:none;padding:18px}
+  .view.on{display:block;animation:fade .2s}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+  .card-h{font-size:12px;font-family:var(--mono);color:var(--txt-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .card-h::before{content:"";width:3px;height:13px;background:var(--accent);border-radius:2px}
+  .row{display:flex;gap:10px;margin-bottom:12px}
+  .field{flex:1}
+  label{display:block;font-size:12px;color:var(--txt-dim);margin-bottom:6px;font-weight:600}
+  input[type=time],input[type=date],input[type=text],input[type=number],input[type=email],input[type=password]{width:100%;background:var(--panel-2);border:1px solid var(--line-bright);border-radius:10px;color:var(--txt);padding:12px;font-size:16px;font-family:var(--mono);-webkit-appearance:none;appearance:none;text-align:center}
+  input[type=email],input[type=password]{text-align:left;direction:ltr}
+  input::placeholder{color:var(--txt-dim);opacity:.7}
+  input:-webkit-autofill,input:-webkit-autofill:focus{-webkit-text-fill-color:var(--txt);-webkit-box-shadow:0 0 0 1000px var(--panel-2) inset;caret-color:var(--txt)}
+  input[type=date]{text-align:right}
+  input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+  .toggle{display:flex;align-items:center;gap:10px;padding:12px;background:var(--panel-2);border:1px solid var(--line-bright);border-radius:10px;cursor:pointer}
+  .toggle.on{border-color:var(--amber);background:var(--amber-dim)}
+  .switch{width:44px;height:26px;border-radius:14px;background:var(--line-bright);position:relative;flex-shrink:0;transition:.2s}
+  .switch::after{content:"";position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+  .toggle.on .switch{background:var(--amber)}
+  .toggle.on .switch::after{transform:translateX(-18px)}
+  .toggle .lbl{font-size:14px;font-weight:600}
+  .toggle .hint{font-size:11px;color:var(--txt-dim);margin-top:2px}
+  .btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:.15s;font-family:inherit}
+  .btn-primary{background:var(--accent);color:#04231b}
+  .btn-primary:active{transform:scale(.98)}
+  .btn-ghost{background:var(--panel-2);color:var(--txt);border:1px solid var(--line-bright)}
+  .btn-add{background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent)}
+  .btn-amber{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber)}
+  select:focus{outline:none;border-color:var(--accent)}
+  .shift-item.absence{border-color:var(--r150);border-right:4px solid var(--r150)}
+  .shift-item.lowconf{border-color:var(--amber)}
+  .shift-item.hoursonly{border-right:4px solid var(--line-bright)}
+  .badge-lc{font-size:10px;background:var(--amber-dim);color:var(--amber);padding:2px 6px;border-radius:5px;font-weight:700;margin-inline-start:4px}
+  .badge-a{font-size:10px;background:var(--red-dim);color:var(--r150);padding:2px 6px;border-radius:5px;font-weight:700}
+  .total-box{background:linear-gradient(135deg,var(--accent-dim),var(--panel-2));border:1px solid var(--accent);border-radius:14px;padding:18px;text-align:center;margin-bottom:14px}
+  .total-box .cap{font-size:12px;color:var(--txt-dim);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase}
+  .total-box .amt{font-size:36px;font-weight:800;color:var(--accent);font-family:var(--mono);margin-top:4px;direction:ltr}
+  .total-box .amt small{font-size:18px;opacity:.7}
+  .total-box .meta{font-size:12.5px;color:var(--txt-dim);margin-top:6px}
+  .bands{display:flex;flex-direction:column;gap:8px}
+  .band{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;border-right:4px solid var(--bar)}
+  .band .tag{font-family:var(--mono);font-weight:700;font-size:13px;min-width:52px}
+  .band .desc{flex:1;font-size:13px;color:var(--txt-dim)}
+  .band .hrs{font-family:var(--mono);font-size:14px;font-weight:600;direction:ltr}
+  .band .money{font-family:var(--mono);font-size:14px;font-weight:700;direction:ltr;min-width:74px;text-align:left}
+  .empty{text-align:center;padding:34px 18px;color:var(--txt-dim)}
+  .empty svg{opacity:.4;margin-bottom:12px}
+  .empty .t{font-size:15px;font-weight:600;color:var(--txt)}
+  .empty .s{font-size:13px;margin-top:4px}
+  .shift-list{display:flex;flex-direction:column;gap:10px}
+  .shift-item{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+  .shift-item.special{border-color:var(--amber);border-right:4px solid var(--amber)}
+  .shift-item .si-date{font-family:var(--mono);font-size:12px;color:var(--txt-dim);min-width:48px}
+  .shift-item .si-time{font-family:var(--mono);font-size:14px;font-weight:600;flex:1;direction:ltr;text-align:right}
+  .shift-item .si-pay{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent);direction:ltr}
+  .shift-item .si-del{background:none;border:none;color:var(--red);font-size:22px;cursor:pointer;padding:0 4px;line-height:1}
+  .badge-s{font-size:10px;background:var(--amber-dim);color:var(--amber);padding:2px 6px;border-radius:5px;font-weight:700}
+  .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .stat .k{font-size:11.5px;color:var(--txt-dim);font-family:var(--mono)}
+  .stat .v{font-size:22px;font-weight:800;font-family:var(--mono);margin-top:4px;direction:ltr}
+  .stat.accent .v{color:var(--accent)}
+  .ledger{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+  .ledger .line{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:14px;border-bottom:1px dashed var(--line-bright)}
+  .ledger .line:last-child{border:none}
+  .ledger .line .lk{color:var(--txt-dim)}
+  .ledger .line .lv{font-family:var(--mono);font-weight:600;direction:ltr}
+  .ledger .line.big{padding-top:12px;margin-top:4px;border-top:1px solid var(--accent);border-bottom:none}
+  .ledger .line.big .lk{color:var(--txt);font-weight:700;font-size:16px}
+  .ledger .line.big .lv{color:var(--accent);font-weight:800;font-size:20px}
+  .note{font-size:12px;color:var(--txt-dim);line-height:1.6;padding:12px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px}
+  .note b{color:var(--txt)}
+  .drop{border:2px dashed var(--line-bright);border-radius:12px;padding:24px 16px;text-align:center;cursor:pointer;background:var(--panel-2)}
+  .drop:active{border-color:var(--accent)}
+  .drop svg{opacity:.5;margin-bottom:8px}
+  .drop .t{font-size:14px;font-weight:600}
+  .drop .s{font-size:12px;color:var(--txt-dim);margin-top:2px}
+  .file-chip{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--accent-dim);border:1px solid var(--accent);border-radius:10px;margin-top:10px}
+  .file-chip .fn{flex:1;font-size:13px;font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .file-chip .view-btn{color:var(--accent);font-size:12px;font-weight:700;background:none;border:none;cursor:pointer}
+  .file-chip .rm{color:var(--red);cursor:pointer;background:none;border:none;font-size:18px}
+  .spinner{width:36px;height:36px;border:3px solid var(--line-bright);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .diff-row{display:flex;align-items:center;padding:11px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;margin-bottom:8px;gap:8px}
+  .diff-row .dk{flex:1;font-size:13.5px;font-weight:600}
+  .diff-row .dc,.diff-row .dp{font-family:var(--mono);font-size:13px;direction:ltr;min-width:74px;text-align:center}
+  .diff-row .dc{color:var(--txt-dim)}
+  .diff-row .dd{font-family:var(--mono);font-size:13px;font-weight:700;direction:ltr;min-width:74px;text-align:left}
+  .diff-head{display:flex;padding:0 14px 6px;gap:8px;font-size:10.5px;color:var(--txt-dim);font-family:var(--mono);text-transform:uppercase}
+  .diff-head .h1{flex:1}.diff-head .h2,.diff-head .h3{min-width:74px;text-align:center}.diff-head .h4{min-width:74px;text-align:left}
+  .pos{color:var(--green)}.neg{color:var(--red)}.zero{color:var(--txt-dim)}
+  .diff-banner{border-radius:14px;padding:18px;text-align:center;margin-bottom:14px;border:1px solid}
+  .diff-banner.match{background:var(--green-dim);border-color:var(--green)}
+  .diff-banner.under{background:var(--red-dim);border-color:var(--red)}
+  .diff-banner.over{background:var(--amber-dim);border-color:var(--amber)}
+  .diff-banner .bt{font-size:13px;font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;opacity:.85}
+  .diff-banner .bv{font-size:32px;font-weight:800;font-family:var(--mono);margin-top:4px;direction:ltr}
+  .diff-banner.match .bv{color:var(--green)}.diff-banner.under .bv{color:var(--red)}.diff-banner.over .bv{color:var(--amber)}
+  .ratecard{display:flex;flex-direction:column;gap:6px}
+  .ratecard .rr{display:flex;align-items:center;gap:10px;font-size:13px;padding:8px 10px;background:var(--panel-2);border-radius:8px;border-right:3px solid var(--bar)}
+  .ratecard .rr .rt{font-family:var(--mono);color:var(--txt-dim);direction:ltr;min-width:110px}
+  .ratecard .rr .rp{font-family:var(--mono);font-weight:700;margin-right:auto;direction:ltr}
+  .divider{height:1px;background:var(--line);margin:16px 0}
+  .mini-label{font-size:11px;color:var(--txt-dim);margin:14px 0 8px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px}
+  .ahead{display:flex;padding:0 12px 8px;gap:6px;font-size:10.5px;color:var(--txt-dim);font-family:var(--mono);text-transform:uppercase;border-bottom:1px solid var(--line)}
+  .ahead .am{flex:1}.ahead .ac,.ahead .ap,.ahead .ad{min-width:72px;text-align:center}
+  .arow{display:flex;align-items:center;padding:12px;gap:6px;border-bottom:1px solid var(--line);cursor:pointer;transition:.12s}
+  .arow:active{background:var(--panel-2)}
+  .arow .am{flex:1;font-size:14px;font-weight:600}
+  .arow .ac,.arow .ap{min-width:72px;text-align:center;font-family:var(--mono);font-size:12.5px;color:var(--txt-dim);direction:ltr}
+  .arow .ad{min-width:72px;text-align:center;font-family:var(--mono);font-size:12.5px;font-weight:700;direction:ltr}
+  .arow.atot{border-bottom:none;border-top:2px solid var(--accent);margin-top:4px;padding-top:14px}
+  .arow.atot .am{font-weight:800;font-size:15px}
+  .arow.atot .ac,.arow.atot .ap{color:var(--txt);font-weight:700;font-size:13.5px}
+  .arow.atot .ad{font-size:14px}
+  .cfg-warn{background:var(--amber-dim);border:1px solid var(--amber);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--amber);margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div id="auth-gate" style="display:block;position:fixed;inset:0;z-index:1000;background:var(--bg);overflow-y:auto">
+  <div style="max-width:400px;margin:0 auto;padding:60px 24px 40px">
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="display:inline-flex;align-items:center;gap:10px;margin-bottom:8px"><span class="dot"></span><span style="font-size:22px;font-weight:800">מערכת שכר משמרות</span></div>
+      <div class="sub" style="font-family:var(--mono);font-size:11.5px;color:var(--txt-dim);letter-spacing:1px">SOC · משרד רוה"מ · מרטנס</div>
+    </div>
+    <div class="card">
+      <div id="auth-tabs" style="display:flex;gap:8px;margin-bottom:18px">
+        <button id="tab-login" class="btn btn-primary" onclick="authMode('login')" style="flex:1">התחברות</button>
+        <button id="tab-signup" class="btn btn-ghost" onclick="authMode('signup')" style="flex:1">הרשמה</button>
+      </div>
+      <div class="field" style="margin-bottom:12px"><label>אימייל</label><input type="email" id="auth-email" placeholder="you@example.com" style="text-align:left;direction:ltr"></div>
+      <div class="field" style="margin-bottom:16px"><label>סיסמה</label><input type="password" id="auth-pass" placeholder="••••••••" style="text-align:left;direction:ltr"></div>
+      <button class="btn btn-primary" id="auth-submit" onclick="authSubmit()">התחבר</button>
+      <div id="auth-msg" style="margin-top:14px"></div>
+      <div style="text-align:center;margin-top:14px"><a id="forgot-link" onclick="showReset()" style="color:var(--accent);font-size:13px;cursor:pointer;text-decoration:none">שכחת סיסמה?</a></div>
+    </div>
+    <div id="auth-cfg-note"></div>
+  </div>
+</div>
+
+<header>
+  <div class="brand"><span class="dot"></span><h1>מערכת שכר משמרות</h1></div>
+  <div class="sub">SOC · משרד רוה"מ · מרטנס</div>
+</header>
+
+<div class="monthbar">
+  <button class="nav" onclick="changeMonth(1)">‹</button>
+  <div class="mlabel" id="mlabel">—</div>
+  <button class="nav" onclick="changeMonth(-1)">›</button>
+</div>
+
+<div class="tabs">
+  <button class="tab on" data-tab="calc">מחשבון</button>
+  <button class="tab" data-tab="shifts">משמרות</button>
+  <button class="tab" data-tab="payslip">תלוש</button>
+  <button class="tab" data-tab="diff">השוואה</button>
+  <button class="tab" data-tab="annual">שנתי</button>
+  <button class="tab" data-tab="settings">הגדרות</button>
+</div>
+
+<section class="view on" id="calc">
+  <div class="card">
+    <div class="card-h">בדיקת משמרת מהירה</div>
+    <div class="row">
+      <div class="field"><label>שעת התחלה</label><input type="time" id="c-start" value="16:00"></div>
+      <div class="field"><label>שעת סיום</label><input type="time" id="c-end" value="00:00"></div>
+    </div>
+    <div class="toggle" id="c-special"><div class="switch"></div><div><div class="lbl">שבת / חג (150%)</div><div class="hint">שישי 16:00 עד מוצ״ש · ערב חג עד צאת החג</div></div></div>
+  </div>
+  <button class="btn btn-primary" onclick="calcShift()">חשב שכר</button>
+  <div id="c-result" style="margin-top:16px"></div>
+  <button class="btn btn-add" id="c-addbtn" style="display:none;margin-top:6px" onclick="addCalcToMonth()">＋ הוסף לחודש הנוכחי</button>
+</section>
+
+<section class="view" id="shifts">
+  <div class="card">
+    <div class="card-h">העלאת דוח נוכחות (קריאה אוטומטית)</div>
+    <div class="drop" onclick="document.getElementById('att-file').click()">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      <div class="t">העלה דוח נוכחות (PDF)</div>
+      <div class="s">קורא שעות כניסה/יציאה לכל יום + ימי מחלה/חופשה</div>
+    </div>
+    <input type="file" id="att-file" accept="application/pdf" style="display:none" onchange="uploadAttendance(this)">
+    <div id="att-status"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">הוספה ידנית</div>
+    <div class="row"><div class="field"><label>תאריך</label><input type="date" id="s-date"></div></div>
+    <div class="row">
+      <div class="field"><label>התחלה</label><input type="time" id="s-start" value="16:00"></div>
+      <div class="field"><label>סיום</label><input type="time" id="s-end" value="00:00"></div>
+    </div>
+    <div class="toggle" id="s-special" style="margin-bottom:12px"><div class="switch"></div><div><div class="lbl">שבת / חג (150%)</div></div></div>
+    <button class="btn btn-add" onclick="addShift()">＋ הוסף משמרת</button>
+    <div class="divider"></div>
+    <div class="mini-label">יום היעדרות בתשלום</div>
+    <div class="row">
+      <div class="field"><label>תאריך</label><input type="date" id="ab-date"></div>
+      <div class="field"><label>סוג</label><select id="ab-type" style="width:100%;background:var(--panel-2);border:1px solid var(--line-bright);border-radius:10px;color:var(--txt);padding:12px;font-size:16px;font-family:var(--mono)"><option value="sick">מחלה</option><option value="vacation">חופשה</option><option value="holiday">חג</option></select></div>
+    </div>
+    <div class="row"><div class="field"><label>שעות בתשלום ליום</label><input type="number" step="0.5" id="ab-hours" value="8.27" placeholder="8.27"></div></div>
+    <button class="btn btn-amber" onclick="addAbsence()">＋ הוסף יום היעדרות</button>
+  </div>
+  <div id="s-list"></div>
+  <div id="s-summary"></div>
+</section>
+
+<section class="view" id="payslip">
+  <div id="p-cfgwarn"></div>
+  <div class="card">
+    <div class="card-h">העלאת תלוש (קריאה אוטומטית)</div>
+    <div class="drop" onclick="document.getElementById('p-file').click()">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15V3m0 0L8 7m4-4l4 4"/><path d="M3 15v4a2 2 0 002 2h14a2 2 0 002-2v-4"/></svg>
+      <div class="t">העלה PDF של התלוש</div>
+      <div class="s">המערכת תקרא אוטומטית את הסכומים והשעות</div>
+    </div>
+    <input type="file" id="p-file" accept="application/pdf" style="display:none" onchange="uploadPayslip(this)">
+    <div id="p-status"></div>
+    <div id="p-filechip"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">נתוני התלוש · ניתן לתקן ידנית</div>
+    <div class="mini-label">שעות נוספות (₪ מהתלוש)</div>
+    <div class="row">
+      <div class="field"><label>ש.נ 20%</label><input type="number" step="0.01" id="p-ot20" placeholder="0"></div>
+      <div class="field"><label>ש.נ 30%</label><input type="number" step="0.01" id="p-ot30" placeholder="0"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>ש.נ 50%</label><input type="number" step="0.01" id="p-ot50" placeholder="0"></div>
+      <div class="field"><label>ש.נ 125%</label><input type="number" step="0.01" id="p-ot125" placeholder="0"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>ש.נ 150%</label><input type="number" step="0.01" id="p-ot150" placeholder="0"></div>
+      <div class="field"><label>שכר בסיס</label><input type="number" step="0.01" id="p-base" placeholder="0"></div>
+    </div>
+    <div class="mini-label">סיכומים (₪)</div>
+    <div class="row">
+      <div class="field"><label>נסיעות</label><input type="number" step="0.01" id="p-travel" placeholder="350"></div>
+      <div class="field"><label>ברוטו שוטף</label><input type="number" step="0.01" id="p-gross" placeholder="0"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>ניכויי חובה</label><input type="number" step="0.01" id="p-ded" placeholder="0"></div>
+      <div class="field"><label>סכום בבנק</label><input type="number" step="0.01" id="p-bank" placeholder="0"></div>
+    </div>
+    <button class="btn btn-add" onclick="savePayslip()">שמור תלוש לחודש</button>
+  </div>
+  <div id="p-saved"></div>
+</section>
+
+<section class="view" id="diff"><div id="d-content"></div></section>
+
+<section class="view" id="annual">
+  <div class="monthbar" style="border:none;padding:0 0 14px;background:none">
+    <button class="nav" onclick="changeYear(1)">‹</button>
+    <div class="mlabel" id="ylabel">—</div>
+    <button class="nav" onclick="changeYear(-1)">›</button>
+  </div>
+  <div id="a-content"></div>
+</section>
+
+<section class="view" id="settings">
+  <div class="card" id="cfg-card">
+    <div class="card-h">חיבור לשרת (Supabase)</div>
+    <div class="note" style="margin-bottom:14px">כדי לקרוא תלושים אוטומטית, הזן את כתובת ה-Edge Function וה-anon key. נשמר מקומית במכשיר.</div>
+    <div class="field" style="margin-bottom:12px"><label>Function URL</label><input type="text" id="cfg-url" placeholder="https://xxxx.supabase.co/functions/v1/parse-payslip" style="text-align:left;direction:ltr"></div>
+    <div class="field" style="margin-bottom:12px"><label>Anon Key</label><input type="text" id="cfg-key" placeholder="eyJhbGci..." style="text-align:left;direction:ltr"></div>
+    <button class="btn btn-primary" onclick="saveConfig()">שמור חיבור</button>
+  </div>
+  <div class="card">
+    <div class="card-h">התקנה כאפליקציה</div>
+    <div id="install-area">
+      <div class="note">להתקנת המערכת כאפליקציה במסך הבית:<br><br><b>אייפון (Safari):</b> כפתור שיתוף ⬆️ → "הוסף למסך הבית".<br><b>אנדרואיד (Chrome):</b> תפריט ⋮ → "התקן אפליקציה".<br><br>אחרי ההתקנה — האפליקציה נפתחת במסך מלא, עם אייקון משלה, ועובדת גם ללא אינטרנט (הנתונים מסתנכרנים כשחוזר חיבור).</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h">תעריפי החוזה</div>
+    <div class="ratecard">
+      <div class="rr" style="--bar:var(--r100)"><span class="rt">07:30–16:00</span><span>רגיל 100%</span><span class="rp">60 ₪</span></div>
+      <div class="rr" style="--bar:var(--r120)"><span class="rt">16:00–00:00</span><span>ערב 120%</span><span class="rp">72 ₪</span></div>
+      <div class="rr" style="--bar:var(--r130)"><span class="rt">00:00–07:30</span><span>לילה 130%</span><span class="rp">78 ₪</span></div>
+      <div class="rr" style="--bar:var(--r150)"><span class="rt">שבת / חג</span><span>150%</span><span class="rp">90 ₪</span></div>
+      <div class="rr" style="--bar:var(--accent)"><span class="rt">נסיעות</span><span>חודשי</span><span class="rp">350 ₪</span></div>
+    </div>
+  </div>
+  <div class="note"><b>שים לב:</b> התלוש בפועל מחושב לפי אחוזי שעות נוספות (20/30/50/125/150), בעוד המחשבון מבוסס על תוספת המשמרות בחוזה (100/120/130/150). לכן ההשוואה היא ברמת הברוטו הכולל, עם פירוט מלא של שני הצדדים.</div>
+  <div class="divider"></div>
+  <div id="user-info" class="note" style="margin-bottom:12px"></div>
+  <button class="btn btn-ghost" style="margin-bottom:12px" onclick="signOut()">התנתקות</button>
+  <button class="btn btn-ghost" onclick="wipeAll()">איפוס כל הנתונים</button>
+</section>
+
+<script>
+/* מציג שגיאות JS על המסך במקום קיפאון שקט — עוזר לאבחון */
+window.addEventListener('error',function(e){
+  try{
+    var box=document.getElementById('err-box');
+    if(!box){box=document.createElement('div');box.id='err-box';
+      box.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#3a1212;color:#ffb4b4;font:12px monospace;padding:10px;direction:ltr;max-height:40vh;overflow:auto;border-top:2px solid #ff6b6b';
+      document.body.appendChild(box);}
+    box.innerHTML+='<div>⚠ '+(e.message||'error')+(e.filename?(' @ '+e.filename.split('/').pop()+':'+e.lineno):'')+'</div>';
+  }catch(_){}
+});
+window.addEventListener('unhandledrejection',function(e){
+  try{
+    var box=document.getElementById('err-box');
+    if(!box){box=document.createElement('div');box.id='err-box';
+      box.style.cssText='position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#3a1212;color:#ffb4b4;font:12px monospace;padding:10px;direction:ltr;max-height:40vh;overflow:auto;border-top:2px solid #ff6b6b';
+      document.body.appendChild(box);}
+    box.innerHTML+='<div>⚠ Promise: '+(e.reason&&e.reason.message?e.reason.message:String(e.reason))+'</div>';
+  }catch(_){}
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ===== PWA: manifest + service worker (inline, single-file) ===== */
+(function(){
+  const ICON='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMDgiIGZpbGw9IiMwYTBlMTQiLz48Y2lyY2xlIGN4PSIyNTYiIGN5PSIxNDgiIHI9IjI4IiBmaWxsPSIjMDBkOWEzIi8+PHRleHQgeD0iMjU2IiB5PSIzMzQiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0MCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwMGQ5YTMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKCqjwvdGV4dD48dGV4dCB4PSIyNTYiIHk9IjQzMCIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTYiIGZpbGw9IiM3ZDhkYTMiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNPQzwvdGV4dD48L3N2Zz4=';
+  const manifest={
+    name:'מערכת שכר משמרות SOC',short_name:'שכר SOC',
+    description:'מחשבון שכר משמרות, קריאת תלושים ודוחות נוכחות',
+    start_url:'.',scope:'.',display:'standalone',orientation:'portrait',
+    background_color:'#0a0e14',theme_color:'#0a0e14',lang:'he',dir:'rtl',
+    icons:[
+      {src:ICON,sizes:'192x192',type:'image/svg+xml',purpose:'any'},
+      {src:ICON,sizes:'512x512',type:'image/svg+xml',purpose:'any'},
+      {src:ICON,sizes:'512x512',type:'image/svg+xml',purpose:'maskable'}
+    ]
+  };
+  const blob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
+  const link=document.createElement('link');link.rel='manifest';link.href=URL.createObjectURL(blob);
+  document.head.appendChild(link);
+
+  // Service worker: מאפשר עבודה אופליין. נרשם מ-blob כדי להישאר קובץ יחיד.
+  // עטוף ב-try כי ב-file:// או בדפדפנים מסוימים ה-register עלול לזרוק שגיאה מיידית.
+  try{
+  if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+    const swCode=`
+      const CACHE='soc-salary-v1';
+      self.addEventListener('install',e=>{self.skipWaiting();});
+      self.addEventListener('activate',e=>{e.waitUntil(clients.claim());});
+      self.addEventListener('fetch',e=>{
+        const url=e.request.url;
+        // לא לשמור בקאש קריאות ל-Supabase/Anthropic (דינמי)
+        if(url.includes('supabase.co')||url.includes('anthropic.com')){return;}
+        e.respondWith(
+          caches.open(CACHE).then(cache=>
+            cache.match(e.request).then(hit=>{
+              const net=fetch(e.request).then(res=>{
+                if(res&&res.status===200&&e.request.method==='GET'){cache.put(e.request,res.clone());}
+                return res;
+              }).catch(()=>hit);
+              return hit||net;
+            })
+          )
+        );
+      });
+    `;
+    const swBlob=new Blob([swCode],{type:'text/javascript'});
+    const swUrl=URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swUrl).catch(()=>{});
+  }
+  }catch(e){/* service worker לא זמין - ממשיכים בלי אופליין */}
+
+  // כפתור התקנה לאנדרואיד (Chrome תומך ב-beforeinstallprompt)
+  let deferredPrompt=null;
+  window.addEventListener('beforeinstallprompt',(e)=>{
+    e.preventDefault();deferredPrompt=e;
+    const area=document.getElementById('install-area');
+    if(area){area.innerHTML=`<button class="btn btn-primary" id="do-install">📲 התקן אפליקציה</button><div class="note" style="margin-top:10px">או ידנית: אייפון → שיתוף ⬆️ → "הוסף למסך הבית".</div>`;
+      document.getElementById('do-install').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;area.innerHTML='<div class="note" style="color:var(--green)">✓ האפליקציה מותקנת. חפש את האייקון במסך הבית.</div>';}};
+    }
+  });
+  window.addEventListener('appinstalled',()=>{const area=document.getElementById('install-area');if(area)area.innerHTML='<div class="note" style="color:var(--green)">✓ האפליקציה מותקנת.</div>';});
+})();
+</script>
+<script>
+const BASE=60,HALF730=450,H16=960,TRAVEL=350;
+var authCurrentMode='login';
+// פרטי חיבור ברירת מחדל — מוכרז מוקדם כי loadCfg() משתמש בו בטעינה.
+const DEFAULT_CFG={url:'https://nprvyyvwtagijuzajevl.supabase.co/functions/v1/parse-payslip',key:'sb_publishable_NaRu_c1CF-LaWT8aGvXB8Q_pZt_6EAg'};
+const bandMeta={100:{name:'רגיל',time:'07:30–16:00',color:'var(--r100)'},120:{name:'ערב',time:'16:00–00:00',color:'var(--r120)'},130:{name:'לילה',time:'00:00–07:30',color:'var(--r130)'},150:{name:'שבת/חג',time:'150%',color:'var(--r150)'}};
+const KEY='soc_salary_v2',CFGKEY='soc_cfg_v1';
+// כתובת המנהל — רק המשתמש הזה רואה את כרטיס המפתחות בהגדרות.
+// שנה לכתובת שלך:
+const ADMIN_EMAIL='Razbar9@gmail.com';
+function isAdmin(){return currentUser&&currentUser.email&&currentUser.email.toLowerCase()===ADMIN_EMAIL.toLowerCase();}
+function applyAdminVisibility(){const card=document.getElementById('cfg-card');if(card)card.style.display=isAdmin()?'':'none';}
+let store=load(),curMonth=defaultMonth(),cfg=loadCfg();
+let sb=null,currentUser=null,cloudReady=false;
+
+// אחסון מקומי (cache אופליין). save() כותב מקומית וגם מסנכרן לענן אם מחובר.
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{months:{}};}catch(e){return{months:{}};}}
+function save(){localStorage.setItem(KEY,JSON.stringify(store));if(cloudReady&&currentUser)syncMonthToCloud(curMonth);}
+
+// ---------- Supabase init + auth ----------
+function initSupabase(){
+  if(!cfg.url||!cfg.key)return false;
+  if(sb)return true;
+  // createClient צריך את כתובת הבסיס של הפרויקט, לא את כתובת ה-Function.
+  // נגזור את הבסיס: https://xxxx.supabase.co
+  let base=cfg.url;
+  const m=cfg.url.match(/^(https:\/\/[^/]+\.supabase\.co)/i);
+  if(m)base=m[1];
+  try{sb=window.supabase.createClient(base,cfg.key);return true;}catch(e){return false;}
+}
+async function checkSession(){
+  if(!initSupabase()){showAuthGate();renderAuthCfgNote();return;}
+  try{
+    // מגבלת זמן ל-getSession כדי שלא ייתקע לנצח
+    const sessP=sb.auth.getSession();
+    const timeoutP=new Promise((res)=>setTimeout(()=>res({data:{session:null},_timeout:true}),8000));
+    const{data}=await Promise.race([sessP,timeoutP]);
+    if(data&&data.session&&data.session.user){currentUser=data.session.user;await onLogin();}
+    else{showAuthGate();}
+    sb.auth.onAuthStateChange((event,session)=>{
+      if(event==='PASSWORD_RECOVERY'){showNewPasswordScreen();return;}
+      if(session&&session.user){currentUser=session.user;onLogin();}
+      else{currentUser=null;showAuthGate();}
+    });
+  }catch(e){
+    // כל כשל — מציגים מסך כניסה במקום קיפאון
+    showAuthGate();
+    const n=document.getElementById('auth-msg');if(n)n.innerHTML='<div class="cfg-warn">שגיאה בבדיקת התחברות. נסה להתחבר שוב.</div>';
+  }
+}
+function showAuthGate(){document.getElementById('auth-gate').style.display='block';renderAuthCfgNote();}
+function hideAuthGate(){document.getElementById('auth-gate').style.display='none';}
+function renderAuthCfgNote(){const el=document.getElementById('auth-cfg-note');if(!el)return;if(!cfg.url||!cfg.key){el.innerHTML=`<div class="cfg-warn" style="margin-top:16px">⚠ החיבור לשרת לא הוגדר. כדי להשתמש בכניסה, יש להזין תחילה את פרטי Supabase. פתח את הקובץ פעם אחת עם חיבור מוגדר, או ראה מדריך ההקמה.</div>`;}else el.innerHTML='';}
+
+function authMode(m){authCurrentMode=m;
+  document.getElementById('tab-login').className='btn '+(m==='login'?'btn-primary':'btn-ghost');
+  document.getElementById('tab-signup').className='btn '+(m==='signup'?'btn-primary':'btn-ghost');
+  document.getElementById('auth-submit').textContent=m==='login'?'התחבר':'הירשם';
+  document.getElementById('auth-msg').innerHTML='';
+}
+async function authSubmit(){
+  if(!initSupabase()){document.getElementById('auth-msg').innerHTML='<div class="cfg-warn">החיבור לשרת לא הוגדר.</div>';return;}
+  const email=document.getElementById('auth-email').value.trim();
+  const pass=document.getElementById('auth-pass').value;
+  const msg=document.getElementById('auth-msg');
+  if(!email||!pass){msg.innerHTML='<div class="cfg-warn">יש למלא אימייל וסיסמה.</div>';return;}
+  msg.innerHTML='<div style="padding:12px"><div class="spinner"></div></div>';
+  try{
+    if(authCurrentMode==='signup'){
+      const{data,error}=await sb.auth.signUp({email,password:pass});
+      if(error)throw error;
+      if(data.user&&!data.session){msg.innerHTML='<div class="note" style="color:var(--green)">✓ נשלח מייל אישור. אשר את האימייל ואז התחבר.</div>';authMode('login');}
+      else{msg.innerHTML='<div class="note" style="color:var(--green)">✓ נרשמת בהצלחה.</div>';}
+    }else{
+      const{error}=await sb.auth.signInWithPassword({email,password:pass});
+      if(error)throw error;
+      msg.innerHTML='';
+    }
+  }catch(e){
+    let he=e.message||'שגיאה';
+    if(/Invalid login/i.test(he))he='אימייל או סיסמה שגויים.';
+    else if(/already registered/i.test(he))he='האימייל כבר רשום. נסה להתחבר.';
+    else if(/Email not confirmed/i.test(he))he='האימייל טרם אושר. בדוק את תיבת הדואר.';
+    else if(/at least 6/i.test(he))he='הסיסמה חייבת להיות לפחות 6 תווים.';
+    msg.innerHTML=`<div class="cfg-warn">${he}</div>`;
+  }
+}
+async function signOut(){if(sb){await sb.auth.signOut();}currentUser=null;store={months:{}};save();showAuthGate();}
+
+// ---------- איפוס סיסמה ----------
+function showReset(){
+  if(!initSupabase()){document.getElementById('auth-msg').innerHTML='<div class="cfg-warn">החיבור לשרת לא הוגדר.</div>';return;}
+  const email=document.getElementById('auth-email').value.trim();
+  const msg=document.getElementById('auth-msg');
+  if(!email){msg.innerHTML='<div class="cfg-warn">הזן קודם את האימייל שלך למעלה, ואז לחץ "שכחת סיסמה?".</div>';return;}
+  sendReset(email);
+}
+async function sendReset(email){
+  const msg=document.getElementById('auth-msg');
+  msg.innerHTML='<div style="padding:12px"><div class="spinner"></div></div>';
+  try{
+    const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href.split('#')[0]});
+    if(error)throw error;
+    msg.innerHTML='<div class="note" style="color:var(--green)">✓ נשלח מייל לאיפוס סיסמה ל-'+email+'. פתח את הקישור מהמייל כדי לקבוע סיסמה חדשה.</div>';
+  }catch(e){msg.innerHTML='<div class="cfg-warn">'+(e.message||'שגיאה בשליחת המייל')+'</div>';}
+}
+// מסך קביעת סיסמה חדשה (מוצג כשחוזרים מהמייל במצב recovery)
+function showNewPasswordScreen(){
+  const gate=document.getElementById('auth-gate');
+  gate.style.display='block';
+  const card=gate.querySelector('.card');
+  card.innerHTML=`<div class="card-h">קביעת סיסמה חדשה</div>
+    <div class="field" style="margin-bottom:16px"><label>סיסמה חדשה</label><input type="password" id="new-pass" placeholder="לפחות 6 תווים" style="text-align:left;direction:ltr"></div>
+    <button class="btn btn-primary" onclick="setNewPassword()">שמור סיסמה</button>
+    <div id="np-msg" style="margin-top:14px"></div>`;
+}
+async function setNewPassword(){
+  const np=document.getElementById('new-pass').value;const msg=document.getElementById('np-msg');
+  if(!np||np.length<6){msg.innerHTML='<div class="cfg-warn">הסיסמה חייבת להיות לפחות 6 תווים.</div>';return;}
+  msg.innerHTML='<div style="padding:12px"><div class="spinner"></div></div>';
+  try{
+    const{error}=await sb.auth.updateUser({password:np});
+    if(error)throw error;
+    msg.innerHTML='<div class="note" style="color:var(--green)">✓ הסיסמה עודכנה. מתחבר...</div>';
+    // הסרת ה-hash מה-URL ורענון למצב מחובר
+    history.replaceState(null,'',window.location.pathname+window.location.search);
+    setTimeout(()=>location.reload(),1200);
+  }catch(e){msg.innerHTML='<div class="cfg-warn">'+(e.message||'שגיאה')+'</div>';}
+}
+
+async function onLogin(){
+  hideAuthGate();cloudReady=true;
+  await loadAllFromCloud();
+  const ui=document.getElementById('user-info');if(ui)ui.innerHTML=`מחובר כ: <b>${currentUser.email}</b>`;
+  applyAdminVisibility();
+  renderMonthLabel();renderAll();
+}
+
+// ---------- cloud sync ----------
+async function loadAllFromCloud(){
+  if(!sb||!currentUser)return;
+  try{
+    const{data,error}=await sb.from('salary_months').select('month_key,data').eq('user_id',currentUser.id);
+    if(error)throw error;
+    store={months:{}};
+    for(const row of (data||[])){store.months[row.month_key]=row.data;}
+    localStorage.setItem(KEY,JSON.stringify(store));
+  }catch(e){/* אם נכשל, נשארים עם ה-cache המקומי */}
+}
+let syncTimer=null;
+function syncMonthToCloud(mk){
+  if(!sb||!currentUser)return;
+  clearTimeout(syncTimer);
+  syncTimer=setTimeout(async()=>{
+    const data=store.months[mk];if(!data)return;
+    try{await sb.from('salary_months').upsert({user_id:currentUser.id,month_key:mk,data},{onConflict:'user_id,month_key'});}catch(e){}
+  },600);
+}
+
+// ברירת מחדל לחיבור — כך שכל המשתמשים מתחברים אוטומטית בלי להזין מפתחות.
+// ה-anon key מיועד לצד לקוח ומוגן ע"י RLS. מלא כאן פעם אחת:
+function loadCfg(){try{const saved=JSON.parse(localStorage.getItem(CFGKEY));if(saved&&saved.url&&saved.key)return saved;}catch(e){}
+  return {url:DEFAULT_CFG.url,key:DEFAULT_CFG.key};}
+function saveCfgStore(){localStorage.setItem(CFGKEY,JSON.stringify(cfg));}
+function defaultMonth(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+function monthData(){if(!store.months[curMonth])store.months[curMonth]={shifts:[],absences:[],payslip:null};const m=store.months[curMonth];if(!m.absences)m.absences=[];return m;}
+const LEAVE_RATE=60; // תעריף שעה בסיסי לתשלום ימי היעדרות
+// מחזיר מפת תאריכי מחלה => האם משולם.
+// כללים: (1) היום הראשון בכל רצף אינו משולם. (2) שישי/שבת אינם משולמים אך נספרים ברצף
+// ואינם מפסיקים אותו — כך שיום ראשון שאחריהם נחשב המשך רצף (משולם).
+function sickPayMap(absences){
+  const sick=absences.filter(a=>a.type==='sick'&&a.date).slice().sort((x,y)=>x.date.localeCompare(y.date));
+  const dayMs=86400000;
+  const map={}; // date -> {paid:bool, reason:string}
+  let prev=null; // התאריך הקודם שנספר ברצף (כולל שישי/שבת מדומים)
+  for(const a of sick){
+    const cur=new Date(a.date+'T00:00:00');
+    // בדיקת המשכיות: הפער מהיום הקודם, תוך התעלמות משישי/שבת שביניהם
+    let isNewRun=true;
+    if(prev){
+      // ספור ימים בין prev ל-cur; אם כל הימים שביניהם הם שישי/שבת (או אין פער) => המשך רצף
+      const gap=Math.round((cur-prev)/dayMs);
+      if(gap===1){isNewRun=false;}
+      else if(gap>1){
+        // בדוק אם כל הימים שבאמצע הם שישי(5)/שבת(6)
+        let allWeekend=true;
+        for(let k=1;k<gap;k++){
+          const mid=new Date(prev.getTime()+k*dayMs);
+          const dow=mid.getDay(); // 0=ראשון..5=שישי,6=שבת
+          if(dow!==5&&dow!==6){allWeekend=false;break;}
+        }
+        isNewRun=!allWeekend;
+      }
+    }
+    const dow=cur.getDay();
+    const isWeekend=(dow===5||dow===6);
+    let paid,reason;
+    if(isNewRun){paid=false;reason='first';}       // יום ראשון ברצף
+    else if(isWeekend){paid=false;reason='weekend';} // שישי/שבת ברצף
+    else{paid=true;reason='paid';}
+    map[a.date]={paid,reason};
+    prev=cur;
+  }
+  return map;
+}
+// עטיפה לתאימות: Set של תאריכים שאינם משולמים
+function unpaidSickDates(absences){
+  const m=sickPayMap(absences);const s=new Set();
+  for(const d in m)if(!m[d].paid)s.add(d);
+  return s;
+}
+const absMeta={sick:{name:'מחלה',he:'מחלה'},vacation:{name:'חופשה',he:'חופשה'},holiday:{name:'חג',he:'חג'}};
+const heMonths=['','ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+function renderMonthLabel(){const[y,m]=curMonth.split('-');document.getElementById('mlabel').innerHTML=heMonths[+m]+' <span class="yr">'+y+'</span>';}
+function changeMonth(dir){let[y,m]=curMonth.split('-').map(Number);m+=dir;if(m>12){m=1;y++;}if(m<1){m=12;y--;}curMonth=y+'-'+String(m).padStart(2,'0');renderMonthLabel();renderAll();}
+
+function toMin(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
+function rateAtMinute(tm){if(tm<HALF730)return 130;if(tm<H16)return 100;return 120;}
+// תעריף לפי דקה מוחלטת ויום השבוע של תחילת המשמרת.
+// לפי החוזה: שישי מ-16:00 עד סוף לילה שבת = 150%. שבת עד מוצאי שבת = 150%.
+// dow0 = יום השבוע של תחילת המשמרת (0=ראשון..5=שישי,6=שבת). null אם לא ידוע.
+function rateAtAbs(t, dow0){
+  const dayOffset=Math.floor(t/1440); // 0 = יום התחלת המשמרת, 1 = יום למחרת
+  const tm=t-dayOffset*1440;
+  if(dow0!=null){
+    const dow=(dow0+dayOffset)%7; // יום השבוע של הדקה הנוכחית
+    // שישי (5) מ-16:00 והלאה => 150%
+    if(dow===5 && tm>=H16) return 150;
+    // שבת (6) => 150% לכל אורכה (כולל לילה שממשיך למוצ"ש שנספר כשבת עד סוף המשמרת)
+    if(dow===6) return 150;
+  }
+  return rateAtMinute(tm);
+}
+const BREAK_MIN=30; // חצי שעת הפסקה שאינה בתשלום (לפי החוזה) — מנוכה מכל משמרת
+function splitShift(s1,e1,sp,dow0){let s=toMin(s1),e=toMin(e1);if(e<=s)e+=1440;
+  // ניכוי חצי שעת הפסקה מסוף המשמרת (רק אם המשמרת ארוכה מההפסקה)
+  if(e-s>BREAK_MIN)e-=BREAK_MIN;
+  const totalMin=e-s;
+  if(sp)return{bands:{150:totalMin},totalMin}; // סומן ידנית כשבת/חג
+  const bands={100:0,120:0,130:0,150:0};let t=s;
+  while(t<e){
+    const r=rateAtAbs(t,dow0);
+    // מצא את הגבול הבא (שינוי תעריף): גבולות שעה ביום + חצות
+    const dayOffset=Math.floor(t/1440);const tm=t-dayOffset*1440;
+    let nb=null;for(const b of[HALF730,H16,1440]){const c=dayOffset*1440+b;if(c>t){nb=c;break;}}
+    const se=Math.min(nb,e);bands[r]+=se-t;t=se;
+  }
+  // נקה מדרגות ריקות
+  if(bands[150]===0)delete bands[150];
+  return{bands,totalMin};}
+// גמול שעות נוספות לפי חוק (שיטת מלם, פוצח מהתלוש):
+// גמול שעות נוספות — הערכה מכוילת משלושה תלושים, אחרי ניכוי חצי שעת הפסקה.
+// הנוסחה: שעות מעל ~7.85 (נטו) => 125% (75₪), שעות מעל 9.35 => 150% (90₪).
+// (הספים נמוכים בחצי שעה מהתקן כי כבר ניכינו את ההפסקה מהזמן.)
+// הערכה: מסבירה ~90% מהמקרים. חודשים עם חג עשויים לסטות.
+const OT_THRESHOLD_125=7.85, OT_THRESHOLD_150=9.35;
+function overtimeForShift(minutes){
+  const h=minutes/60;
+  const ot150=h>OT_THRESHOLD_150?(h-OT_THRESHOLD_150):0;
+  // 125% נספר על כל השעות מעל הסף (כולל מעל 10), 150% נוסף על מעל 10 — כמו במבנה התלוש
+  const ot125all=h>OT_THRESHOLD_125?(h-OT_THRESHOLD_125):0;
+  return {ot125:ot125all, ot150};
+}
+function payFor(b){let p=0;for(const r in b)p+=(b[r]/60)*BASE*(r/100);return p;}
+function money(n){return'₪'+(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function hrs(min){return(min/60).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'h';}
+function num(n){return(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));t.classList.add('on');document.getElementById(t.dataset.tab).classList.add('on');if(t.dataset.tab==='diff')renderDiff();if(t.dataset.tab==='annual')renderAnnual();if(t.dataset.tab==='payslip'){renderSavedPayslip();renderCfgWarn();}if(t.dataset.tab==='settings'){loadConfigToForm();applyAdminVisibility();}};});
+function bindToggle(id){const el=document.getElementById(id);el.onclick=()=>el.classList.toggle('on');}
+bindToggle('c-special');bindToggle('s-special');
+
+let lastCalc=null;
+function calcShift(){const s=document.getElementById('c-start').value,e=document.getElementById('c-end').value,sp=document.getElementById('c-special').classList.contains('on');if(!s||!e)return;const{bands,totalMin}=splitShift(s,e,sp);const pay=payFor(bands);lastCalc={s,e,sp};let rows='';for(const r of[100,120,130,150]){if(bands[r]>0){const m=bandMeta[r];rows+=`<div class="band" style="--bar:${m.color}"><span class="tag" style="color:${m.color}">${r}%</span><span class="desc">${m.name} · ${m.time}</span><span class="hrs">${hrs(bands[r])}</span><span class="money" style="color:${m.color}">${money((bands[r]/60)*BASE*(r/100))}</span></div>`;}}document.getElementById('c-result').innerHTML=`<div class="total-box"><div class="cap">שכר המשמרת</div><div class="amt">${num(pay)}<small> ₪</small></div><div class="meta">סה"כ ${hrs(totalMin)}${sp?' · שבת/חג':''}</div></div><div class="bands">${rows}</div>`;document.getElementById('c-addbtn').style.display='block';}
+function addCalcToMonth(){if(!lastCalc)return;monthData().shifts.push({date:new Date().toISOString().slice(0,10),...lastCalc});save();renderAll();document.querySelector('.tab[data-tab="shifts"]').click();}
+
+function addShift(){const date=document.getElementById('s-date').value,s=document.getElementById('s-start').value,e=document.getElementById('s-end').value,sp=document.getElementById('s-special').classList.contains('on');if(!date||!s||!e)return;monthData().shifts.push({date,s,e,sp});document.getElementById('s-special').classList.remove('on');save();renderAll();}
+function delShift(i){monthData().shifts.splice(i,1);save();renderAll();}
+function editShift(i){const md=monthData();const sh=md.shifts[i];const curS=sh.hoursOnly?'':sh.s;const curE=sh.hoursOnly?'':sh.e;const ns=prompt('שעת כניסה (HH:MM):',curS||'08:00');if(ns===null)return;const ne=prompt('שעת יציאה (HH:MM):',curE||'16:00');if(ne===null)return;if(/^\d{1,2}:\d{2}$/.test(ns)&&/^\d{1,2}:\d{2}$/.test(ne)){delete sh.hoursOnly;delete sh.mins;sh.s=ns;sh.e=ne;save();renderAll();}else alert('פורמט שעה לא תקין. השתמש ב-HH:MM');}
+function addAbsence(){const date=document.getElementById('ab-date').value,type=document.getElementById('ab-type').value,h=parseFloat(document.getElementById('ab-hours').value)||8.27;if(!date)return;monthData().absences.push({date,type,hours:h});save();renderAll();}
+function delAbsence(i){monthData().absences.splice(i,1);save();renderAll();}
+function isSatDate(dstr){const[y,m,d]=dstr.split('-').map(Number);return new Date(y,m-1,d).getDay()===6;}
+function dowOf(dstr){if(!dstr)return null;const[y,m,d]=dstr.split('-').map(Number);return new Date(y,m-1,d).getDay();}
+
+async function uploadAttendance(input){const f=input.files[0];if(!f)return;const st=document.getElementById('att-status');
+  if(!cfg.url||!cfg.key){st.innerHTML='<div class="cfg-warn" style="margin-top:12px">להגדיר חיבור לשרת ב"הגדרות" כדי לקרוא דוח נוכחות אוטומטית.</div>';return;}
+  st.innerHTML='<div style="padding:18px"><div class="spinner"></div><div style="text-align:center;color:var(--txt-dim);font-size:13px;margin-top:10px">קורא את דוח הנוכחות...</div></div>';
+  try{const b64=await fileToB64(f);const res=await fetch(cfg.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.key,'apikey':cfg.key},body:JSON.stringify({pdf:b64,mode:'attendance'})});const j=await res.json();
+    if(j.ok&&j.data&&j.data.kind==='attendance'){applyAttendance(j.data,st);}
+    else{st.innerHTML=`<div class="cfg-warn" style="margin-top:12px">${j.error||'לא זוהה דוח נוכחות'}. נסה שוב או הוסף ידנית.</div>`;}
+  }catch(e){st.innerHTML=`<div class="cfg-warn" style="margin-top:12px">שגיאת חיבור: ${e.message}</div>`;}}
+
+function applyAttendance(data,st){
+  if(data.period&&data.period!==curMonth){curMonth=data.period;renderMonthLabel();}
+  const md=monthData();
+  md.shifts=[];md.absences=[];
+  let work=0,sick=0,vac=0,hol=0;
+  for(const day of data.days){
+    const iso=day.date.split('/').reverse().join('-');
+    if(day.type==='work'){
+      if(day.entry&&day.exit){md.shifts.push({date:iso,s:day.entry,e:day.exit,sp:isSatDate(iso)});}
+      else{const mins=day.minutes||0;md.shifts.push({date:iso,hoursOnly:true,mins,sp:isSatDate(iso)});}
+      work++;
+    }
+    else if(day.type==='sick'){md.absences.push({date:iso,type:'sick',hours:8.27});sick++;}
+    else if(day.type==='vacation'){md.absences.push({date:iso,type:'vacation',hours:8.27});vac++;}
+    else if(day.type==='holiday'){md.absences.push({date:iso,type:'holiday',hours:8.27});hol++;}
+  }
+  save();renderAll();
+  const via=data._via==='vision'?' (נקרא ע"י זיהוי חכם)':'';
+  st.innerHTML=`<div class="note" style="margin-top:12px">✓ נקראו <b>${work}</b> ימי עבודה עם שעות מדויקות${sick?`, ${sick} מחלה`:''}${vac?`, ${vac} חופשה`:''}${hol?`, ${hol} חג`:''}${via}. השעות פוצלו אוטומטית לתעריפים. ניתן להקיש על יום לתיקון.</div>`;
+}
+
+function computeMonth(mk){const md=mk?(store.months[mk]||{shifts:[],absences:[]}):monthData();const shifts=md.shifts||[],absences=md.absences||[];let totMin=0,wagePay=0,bandTot={100:0,120:0,130:0,150:0};
+  let ot125h=0,ot150h=0; // גמול שעות נוספות לפי חוק (שיטת התלוש)
+  for(const sh of shifts){
+    let shiftMin;
+    if(sh.hoursOnly){
+      // יום עם משך בלבד: שבת=150%, אחרת תעריף רגיל 100%. מנכה חצי שעת הפסקה.
+      let mins=sh.mins||0;if(mins>BREAK_MIN)mins-=BREAK_MIN;totMin+=mins;shiftMin=mins;
+      const r=sh.sp?150:100;bandTot[r]+=mins;wagePay+=(mins/60)*BASE*(r/100);
+    }else{
+      const{bands,totalMin}=splitShift(sh.s,sh.e,sh.sp,dowOf(sh.date));totMin+=totalMin;shiftMin=totalMin;wagePay+=payFor(bands);for(const r in bands)bandTot[r]+=bands[r];
+    }
+    // גמול שעות נוספות ליום — נספר על כל השעות מעל התקן, כולל שבת/חג (כמו בתלוש)
+    const ot=overtimeForShift(shiftMin);ot125h+=ot.ot125;ot150h+=ot.ot150;
+  }
+  // תשלום ימי היעדרות. עבור מחלה: היום הראשון בכל רצף אינו בתשלום (0%), השאר מלא.
+  let leavePay=0,leaveHours=0,unpaidSickDays=0;
+  const unpaidSet=unpaidSickDates(absences);
+  for(const ab of absences){
+    const hrs=ab.hours||0;leaveHours+=hrs;
+    if(ab.type==='sick'&&unpaidSet.has(ab.date)){unpaidSickDays++;/* 0% */}
+    else{leavePay+=hrs*LEAVE_RATE;}
+  }
+  const calcGross=wagePay+leavePay+TRAVEL;
+  // הערכת "שיטת התלוש": תעריף לפי שעה + גמול שעות נוספות + מחלה/חופשה + נסיעות
+  const otPay=ot125h*BASE*1.25+ot150h*BASE*1.50;
+  const estSlipGross=wagePay+otPay+leavePay+TRAVEL;
+  return{totMin,wagePay,bandTot,count:shifts.length,leavePay,leaveHours,absCount:absences.length,unpaidSickDays,calcGross,ot125h,ot150h,otPay,estSlipGross};}
+
+function renderShifts(){const md=monthData();const list=document.getElementById('s-list'),sum=document.getElementById('s-summary');
+  if(md.shifts.length===0&&md.absences.length===0){list.innerHTML=`<div class="empty"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><div class="t">אין נתונים בחודש זה</div><div class="s">העלה דוח נוכחות או הוסף ידנית</div></div>`;sum.innerHTML='';return;}
+  // merge shifts + absences into one dated list
+  const rows=[];
+  md.shifts.forEach((sh,i)=>rows.push({kind:'shift',_i:i,date:sh.date,...sh}));
+  md.absences.forEach((ab,i)=>rows.push({kind:'abs',_i:i,date:ab.date,...ab}));
+  rows.sort((a,b)=>a.date.localeCompare(b.date));
+  const _sickMap=sickPayMap(md.absences||[]);
+  let items='';for(const r of rows){const dd=r.date.slice(8,10)+'/'+r.date.slice(5,7);
+    if(r.kind==='shift'){
+      if(r.hoursOnly){let mins=r.mins||0;if(mins>BREAK_MIN)mins-=BREAK_MIN;const rate=r.sp?150:100;const pay=(mins/60)*BASE*(rate/100);items+=`<div class="shift-item${r.sp?' special':''} hoursonly"><span class="si-date">${dd}</span><span class="si-time" onclick="editShift(${r._i})" style="cursor:pointer">${(mins/60).toFixed(2)}h ${r.sp?'<span class="badge-s">שבת</span>':'<span class="badge-lc">הקש לשעות</span>'}</span><span class="si-pay">${money(pay)}</span><button class="si-del" onclick="delShift(${r._i})">×</button></div>`;}
+      else{const pay=payFor(splitShift(r.s,r.e,r.sp,dowOf(r.date)).bands);items+=`<div class="shift-item${r.sp?' special':''}"><span class="si-date">${dd}</span><span class="si-time" onclick="editShift(${r._i})" style="cursor:pointer">${r.s}–${r.e} ${r.sp?'<span class="badge-s">שבת/חג</span>':''}</span><span class="si-pay">${money(pay)}</span><button class="si-del" onclick="delShift(${r._i})">×</button></div>`;}
+    }
+    else{const am=absMeta[r.type]||{he:r.type};const si=(r.type==='sick')?_sickMap[r.date]:null;const isUnpaid=si&&!si.paid;const pay=isUnpaid?0:(r.hours||0)*LEAVE_RATE;const lbl=si&&!si.paid?(si.reason==='weekend'?'שישי/שבת · ללא תשלום':'יום 1 · ללא תשלום'):'';items+=`<div class="shift-item absence"><span class="si-date">${dd}</span><span class="si-time"><span class="badge-a">${am.he}</span> ${r.hours}h ${lbl?`<span class="badge-lc">${lbl}</span>`:''}</span><span class="si-pay">${money(pay)}</span><button class="si-del" onclick="delAbsence(${r._i})">×</button></div>`;}}
+  list.innerHTML=`<div class="card-h" style="margin-bottom:10px">יומן החודש (${rows.length})</div><div class="shift-list">${items}</div>`;
+  const c=computeMonth();let br='';for(const r of[100,120,130,150]){if(c.bandTot[r]>0){const m=bandMeta[r];br+=`<div class="band" style="--bar:${m.color}"><span class="tag" style="color:${m.color}">${r}%</span><span class="desc">${m.name}</span><span class="hrs">${hrs(c.bandTot[r])}</span><span class="money" style="color:${m.color}">${money((c.bandTot[r]/60)*BASE*(r/100))}</span></div>`;}}
+  const totalGross=c.wagePay+c.leavePay+TRAVEL;
+  sum.innerHTML=`<div class="summary-grid"><div class="stat"><div class="k">ימי עבודה</div><div class="v">${c.count}</div></div><div class="stat accent"><div class="k">שעות עבודה</div><div class="v">${(c.totMin/60).toFixed(1)}</div></div></div>
+  <div class="card"><div class="card-h">פירוט לפי תעריף</div><div class="bands">${br||'<div class="note">אין משמרות</div>'}</div></div>
+  <div class="ledger"><div class="line"><span class="lk">שכר משמרות</span><span class="lv">${money(c.wagePay)}</span></div>${c.absCount?`<div class="line"><span class="lk">ימי היעדרות בתשלום (${c.absCount})</span><span class="lv">${money(c.leavePay)}</span></div>`:''}<div class="line"><span class="lk">נסיעות</span><span class="lv">${money(TRAVEL)}</span></div><div class="line big"><span class="lk">סה"כ צפוי (ברוטו)</span><span class="lv">${money(totalGross)}</span></div></div>
+  <div class="note"><b>ברוטו לפני ניכויים.</b> מנוכה חצי שעת הפסקה מכל משמרת (לפי החוזה). שישי מ-16:00 ועד סוף שבת מחושב אוטומטית כ-150%. ימי היעדרות לפי ${LEAVE_RATE}₪ לשעה. <b>היום הראשון בכל רצף מחלה אינו בתשלום</b> (חוק דמי מחלה). ניתן לתקן שעות ליום בהוספה הידנית.</div>`;}
+
+function renderCfgWarn(){const el=document.getElementById('p-cfgwarn');if(!cfg.url||!cfg.key){el.innerHTML=`<div class="cfg-warn">⚠ החיבור לשרת לא הוגדר. עבור ל"הגדרות" והזן כתובת Function ו-anon key כדי לקרוא תלושים אוטומטית. עד אז ניתן להזין ידנית.</div>`;}else el.innerHTML='';}
+async function uploadPayslip(input){const f=input.files[0];if(!f)return;const st=document.getElementById('p-status');const rd=new FileReader();rd.onload=()=>{const md=monthData();if(!md.payslip)md.payslip={};md.payslip.file={name:f.name,type:f.type,data:rd.result};save();renderPayslipChip();};rd.readAsDataURL(f);
+  if(!cfg.url||!cfg.key){st.innerHTML='<div class="note" style="margin-top:12px">הקובץ נשמר. הגדר חיבור לשרת לקריאה אוטומטית, או הזן ידנית למטה.</div>';return;}
+  st.innerHTML='<div style="padding:18px"><div class="spinner"></div><div style="text-align:center;color:var(--txt-dim);font-size:13px;margin-top:10px">קורא את התלוש...</div></div>';
+  try{const b64=await fileToB64(f);const res=await fetch(cfg.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.key,'apikey':cfg.key},body:JSON.stringify({pdf:b64})});const j=await res.json();
+    if(j.ok&&j.data){fillFormFromParsed(j.data);lastOtherComponents=j.data.otherComponents||[];let extra='';if(lastOtherComponents.length){extra=' · <b>זוהו רכיבים נוספים:</b> '+lastOtherComponents.map(x=>`${x.name} (${money(x.amount)})`).join(', ')+' — נשמרים אוטומטית.';}if(j.data.period&&j.data.period!==curMonth){st.innerHTML=`<div class="note" style="margin-top:12px">✓ נקרא תלוש עבור <b>${heMonths[+j.data.period.split('-')[1]]} ${j.data.period.split('-')[0]}</b>. אתה בחודש אחר — עבור לחודש הנכון ושמור.${extra}</div>`;}else st.innerHTML=`<div class="note" style="margin-top:12px">✓ הנתונים נקראו ומולאו. בדוק ולחץ "שמור תלוש לחודש".${extra}</div>`;}
+    else{st.innerHTML=`<div class="cfg-warn" style="margin-top:12px">${j.error||'שגיאה בקריאה'}. ניתן להזין ידנית.</div>`;}
+  }catch(e){st.innerHTML=`<div class="cfg-warn" style="margin-top:12px">שגיאת חיבור: ${e.message}. בדוק הגדרות או הזן ידנית.</div>`;}}
+function fileToB64(f){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(f);});}
+let lastOtherComponents=[];
+function fillFormFromParsed(d){const set=(id,v)=>{if(v!==null&&v!==undefined)document.getElementById(id).value=v;};set('p-ot20',d.ot20);set('p-ot30',d.ot30);set('p-ot50',d.ot50);set('p-ot125',d.ot125);set('p-ot150',d.ot150);set('p-base',d.base);set('p-travel',d.travel);set('p-gross',d.gross);set('p-ded',d.deductions);set('p-bank',d.bank);}
+
+function renderPayslipChip(){const md=monthData();const el=document.getElementById('p-filechip');if(md.payslip&&md.payslip.file){el.innerHTML=`<div class="file-chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg><span class="fn">${md.payslip.file.name}</span><button class="view-btn" onclick="viewPayslipFile()">צפה</button><button class="rm" onclick="removePayslipFile()">×</button></div>`;}else el.innerHTML='';}
+function viewPayslipFile(){const md=monthData();if(md.payslip&&md.payslip.file){const w=window.open();w.document.write(`<iframe src="${md.payslip.file.data}" style="border:0;width:100vw;height:100vh"></iframe>`);}}
+function removePayslipFile(){const md=monthData();if(md.payslip){delete md.payslip.file;save();renderPayslipChip();}}
+
+function savePayslip(){const md=monthData();if(!md.payslip)md.payslip={};const g=id=>parseFloat(document.getElementById(id).value)||0;md.payslip.data={ot20:g('p-ot20'),ot30:g('p-ot30'),ot50:g('p-ot50'),ot125:g('p-ot125'),ot150:g('p-ot150'),base:g('p-base'),travel:g('p-travel'),gross:g('p-gross'),deductions:g('p-ded'),bank:g('p-bank'),other:lastOtherComponents||[]};save();renderSavedPayslip();document.getElementById('p-status').innerHTML='';lastOtherComponents=[];alert('התלוש נשמר לחודש '+heMonths[+curMonth.split('-')[1]]);}
+function loadPayslipToForm(){const md=monthData();const d=md.payslip&&md.payslip.data;if(!d)return;const set=(id,v)=>document.getElementById(id).value=(v||v===0)?v:'';set('p-ot20',d.ot20);set('p-ot30',d.ot30);set('p-ot50',d.ot50);set('p-ot125',d.ot125);set('p-ot150',d.ot150);set('p-base',d.base);set('p-travel',d.travel);set('p-gross',d.gross);set('p-ded',d.deductions);set('p-bank',d.bank);}
+function renderSavedPayslip(){renderPayslipChip();const md=monthData();const el=document.getElementById('p-saved');const d=md.payslip&&md.payslip.data;if(!d){el.innerHTML='';return;}loadPayslipToForm();const otTot=(d.ot20||0)+(d.ot30||0)+(d.ot50||0)+(d.ot125||0)+(d.ot150||0);let otherRows='';if(d.other&&d.other.length){otherRows=d.other.map(x=>`<div class="line"><span class="lk">${x.name}</span><span class="lv">${money(x.amount)}</span></div>`).join('');}el.innerHTML=`<div class="card"><div class="card-h">תלוש שמור · ${heMonths[+curMonth.split('-')[1]]}</div><div class="ledger"><div class="line"><span class="lk">שכר בסיס</span><span class="lv">${money(d.base)}</span></div><div class="line"><span class="lk">סה"כ שעות נוספות</span><span class="lv">${money(otTot)}</span></div><div class="line"><span class="lk">נסיעות</span><span class="lv">${money(d.travel)}</span></div>${otherRows}<div class="line"><span class="lk">ברוטו שוטף</span><span class="lv">${money(d.gross)}</span></div><div class="line"><span class="lk">ניכויי חובה</span><span class="lv">${money(d.deductions)}</span></div><div class="line big"><span class="lk">סכום בבנק</span><span class="lv">${money(d.bank)}</span></div></div></div>`;}
+
+// "ברוטו עבודה" מהתלוש: רק רכיבים שהם שכר על שעות עבודה.
+// כולל בסיס + כל ש.נ (גם כאלה שנפלו ל-otherComponents כמו "ש.נ 100%") + נסיעות.
+// מחריג רכיבים שאינם עבודה: דמי הבראה, גילומי מס/ב.ל, בונוסים, ביגוד וכו'.
+function isWorkComponent(name){
+  if(!name)return false;
+  const n=name.replace(/["']/g,'');
+  // רכיבי שעות נוספות ושכר עבודה נחשבים עבודה
+  return /ש\.?נ|שעות\s*נוספות|שעות\s*עבודה|גמול|משמרת/.test(n);
+}
+function workGrossFromPayslip(d){
+  if(!d)return 0;
+  const base=d.base||0;
+  const ot=(d.ot20||0)+(d.ot30||0)+(d.ot50||0)+(d.ot125||0)+(d.ot150||0);
+  const travel=d.travel||0;
+  // הוסף רכיבי עבודה שנמצאים ב-otherComponents (למשל "ש.נ 100%")
+  let otherWork=0;
+  if(d.other&&d.other.length){for(const x of d.other){if(isWorkComponent(x.name))otherWork+=(x.amount||0);}}
+  return base+ot+travel+otherWork;
+}
+// סכום הרכיבים שאינם עבודה (להצגה)
+function nonWorkComponents(d){
+  if(!d||!d.other)return [];
+  return d.other.filter(x=>!isWorkComponent(x.name));
+}
+function renderDiff(){const md=monthData();const el=document.getElementById('d-content');const c=computeMonth();const calcGross=c.wagePay+c.leavePay+TRAVEL;const d=md.payslip&&md.payslip.data;if(!d||!d.gross){el.innerHTML=`<div class="empty"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 3H5a2 2 0 00-2 2v14a2 2 0 002 2h4M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><path d="M9 12h6"/></svg><div class="t">אין תלוש להשוואה</div><div class="s">העלה תלוש בלשונית "תלוש"</div></div>`;return;}
+  const otTot=(d.ot20||0)+(d.ot30||0)+(d.ot50||0)+(d.ot125||0)+(d.ot150||0);
+  // ברוטו עבודה: רק שכר על שעות עבודה (בלי הבראה/גילומים/בונוסים שנמצאים ב-otherComponents)
+  const workGross=workGrossFromPayslip(d);
+  const otherSum=(d.other&&d.other.length)?d.other.reduce((s,x)=>s+(x.amount||0),0):0;
+  const hasNonWork=Math.abs(d.gross-workGross)>1;
+  // ההשוואה מול ברוטו העבודה, לא הברוטו המלא
+  const gDiff=calcGross-workGross;let cls,label;if(Math.abs(gDiff)<1){cls='match';label='תואם';}else if(gDiff>0){cls='under';label='חסר לך';}else{cls='over';label='קיבלת יותר';}
+  let calcRows='';for(const r of[100,120,130,150]){if(c.bandTot[r]>0){const m=bandMeta[r];calcRows+=`<div class="band" style="--bar:${m.color}"><span class="tag" style="color:${m.color}">${r}%</span><span class="desc">${m.name} · ${hrs(c.bandTot[r])}</span><span class="money" style="color:${m.color}">${money((c.bandTot[r]/60)*BASE*(r/100))}</span></div>`;}}
+  if(!calcRows)calcRows='<div class="note">לא הוזנו משמרות בחודש זה. הוסף משמרות כדי לראות את חישוב המחשבון.</div>';
+  const otMeta={ot20:'ש.נ 20%',ot30:'ש.נ 30%',ot50:'ש.נ 50%',ot125:'ש.נ 125%',ot150:'ש.נ 150%'};
+  let otRows='';for(const k in otMeta){if(d[k]>0)otRows+=`<div class="band" style="--bar:var(--r120)"><span class="tag">${otMeta[k].replace('ש.נ ','')}</span><span class="desc">${otMeta[k]}</span><span class="money">${money(d[k])}</span></div>`;}
+  const travelDiff=TRAVEL-(d.travel||0);const tcls=Math.abs(travelDiff)<1?'zero':(travelDiff>0?'pos':'neg');
+  el.innerHTML=`<div class="diff-banner ${cls}"><div class="bt">${label} · ברוטו</div><div class="bv">${gDiff>0?'+':''}${num(gDiff)} ₪</div></div>
+  <div class="card"><div class="card-h">ברוטו עבודה · מחשבון מול תלוש</div><div class="ledger"><div class="line"><span class="lk">המחשבון חישב</span><span class="lv">${money(calcGross)}</span></div><div class="line"><span class="lk">בתלוש (שכר עבודה בלבד)</span><span class="lv">${money(workGross)}</span></div><div class="line big"><span class="lk">${label}</span><span class="lv" style="color:${gDiff>0?'var(--red)':(gDiff<0?'var(--amber)':'var(--green)')}">${gDiff>0?'+':''}${num(gDiff)} ₪</span></div></div>${hasNonWork?`<div class="note" style="margin-top:10px">ההשוואה היא מול <b>שכר העבודה בלבד</b> (בסיס + ש.נ + נסיעות = ${money(workGross)}). רכיבים שאינם שעות עבודה לא נכללים: <b>${money(d.gross-workGross)}</b>${(()=>{const nw=nonWorkComponents(d);const names=nw.map(x=>x.name.replace(/["']/g,'')).filter(Boolean);names.push('גילומים');return names.length?' ('+names.join(', ')+')':' (הבראה/גילומים)';})()}. הברוטו המלא בתלוש: ${money(d.gross)}.</div>`:''}</div>
+  <div class="card"><div class="card-h">צד המחשבון · תעריף לפי שעה</div><div class="bands">${calcRows}</div></div>
+  <div class="card"><div class="card-h">צד התלוש · שעות נוספות</div><div class="bands">${otRows||'<div class="note">אין שעות נוספות בתלוש.</div>'}<div class="ledger" style="margin-top:10px;margin-bottom:0"><div class="line"><span class="lk">שכר בסיס</span><span class="lv">${money(d.base)}</span></div><div class="line"><span class="lk">סה"כ ש.נ</span><span class="lv">${money(otTot)}</span></div></div></div>
+  <div class="card"><div class="card-h">נסיעות</div><div class="diff-head"><span class="h1">רכיב</span><span class="h2">צפוי</span><span class="h3">בתלוש</span><span class="h4">הפרש</span></div><div class="diff-row"><span class="dk">נסיעות</span><span class="dc">${num(TRAVEL)}</span><span class="dp">${num(d.travel||0)}</span><span class="dd ${tcls}">${travelDiff>0?'+':''}${num(travelDiff)}</span></div></div>
+  ${c.leavePay>0?`<div class="card" style="border-color:var(--amber)"><div class="card-h" style="color:var(--amber)">⚠ שים לב · ימי היעדרות</div><div class="ledger"><div class="line"><span class="lk">המחשבון מוסיף מחלה/חופשה בנפרד (${c.absCount} ימים)</span><span class="lv" style="color:var(--amber)">${money(c.leavePay)}</span></div></div><div class="note" style="margin-top:10px">בתלוש של מלם, ימי המחלה/חופשה בדרך כלל <b>כבר כלולים בשכר הבסיס</b> (${money(d.base)}), ולא מופיעים כשורה נפרדת. לכן ההשוואה מציגה למחשבון ${money(c.leavePay)} "יותר" שאולי כבר נמצא בבסיס של התלוש. השווה: ברוטו מחשבון בלי ימי היעדרות = <b>${money(calcGross-c.leavePay)}</b> מול תלוש ${money(d.gross)}.</div></div>`:''}
+  ${d.gross&&c.otPay>0?`<div class="card" style="border-color:var(--accent)"><div class="card-h">הערכת שיטת התלוש</div><div class="note" style="margin-bottom:10px">שחזור מקורב של איך מלם מחשבים: תעריף לפי שעה (אחרי ניכוי חצי שעת הפסקה) + שכבת שעות נוספות. פוצח משלושה תלושים.</div><div class="ledger"><div class="line"><span class="lk">שכר לפי תעריף שעה</span><span class="lv">${money(c.wagePay)}</span></div><div class="line"><span class="lk">+ גמול ש.נ (${c.ot125h.toFixed(1)}ש' ב-125%, ${c.ot150h.toFixed(1)}ש' ב-150%)</span><span class="lv">${money(c.otPay)}</span></div>${c.leavePay>0?`<div class="line"><span class="lk">+ מחלה/חופשה</span><span class="lv">${money(c.leavePay)}</span></div>`:''}<div class="line"><span class="lk">+ נסיעות</span><span class="lv">${money(TRAVEL)}</span></div><div class="line big"><span class="lk">הערכת ברוטו</span><span class="lv">${money(c.estSlipGross)}</span></div><div class="line"><span class="lk">שכר עבודה בתלוש (בלי הבראה/גילומים)</span><span class="lv">${money(workGross)}</span></div><div class="line big"><span class="lk">פער ההערכה</span><span class="lv" style="color:${Math.abs(c.estSlipGross-workGross)<400?'var(--green)':'var(--amber)'}">${(c.estSlipGross-workGross)>0?'+':''}${num(c.estSlipGross-workGross)}</span></div></div><div class="note" style="margin-top:8px">${c.absCount>=3?'⚠ החודש יש הרבה ימי היעדרות — ההערכה פחות מדויקת, כי מלם מגלמים ימי מחלה בבסיס בצורה שקשה לשחזר.':'ההערכה קרובה בחודשים רגילים. פער קטן = שחזור מוצלח. בחודשים עם חג הפער עשוי לגדול.'}</div></div>`:''}
+  ${calcGross<workGross?`<div class="card" style="border-color:var(--green)"><div class="card-h" style="color:var(--green)">✓ התלוש משלם יותר מהחוזה</div><div class="note" style="margin-bottom:10px">המחשבון מציג את מה שמגיע לפי <b>תעריף החוזה</b> (60₪ בסיס, ערב 120%, לילה 130%, שבת/חג 150%). על שכר העבודה, התלוש של מלם משלם <b>${money(workGross-calcGross)} יותר</b> החודש.</div><div class="note" style="margin:0"><b>למה?</b> מלם משלמים גם תעריף שעה וגם גמול שעות נוספות (125%/150%) על משמרות ארוכות — כפי שמגיע לפי חוק. עבדת הרבה משמרות ארוכות, אז הצטבר גמול. זה לא שהם נדיבים — זה שמגיע לך.</div></div>`:''}
+  ${calcGross>workGross&&c.leavePay>0?`<div class="card" style="border-color:var(--amber)"><div class="card-h" style="color:var(--amber)">שים לב · ההפרש מנופח מימי היעדרות</div><div class="note" style="margin:0">המחשבון גבוה החודש בעיקר כי הוא מוסיף ימי מחלה/חופשה בנפרד (${money(c.leavePay)}), אך בתלוש הם כבר בשכר הבסיס. בלי כפילות זו: מחשבון ${money(calcGross-c.leavePay)} מול שכר עבודה בתלוש ${money(workGross)} — כלומר גם כאן התלוש משלם דומה או יותר.</div></div>`:''}
+  <div class="card"><div class="card-h">מה זה אומר?</div><div class="note" style="margin-bottom:10px"><b>המחשבון מציג את מה שמגיע לפי החוזה</b> — כל שעה בתעריף שלה (בסיס 60₪, ערב 72₪, לילה 78₪, שבת/חג 90₪).<br><br><b>מלם מחשבים בשיטה שונה ונדיבה יותר:</b> שכר בסיס חודשי גבוה, ומעליו שכבת שעות נוספות (ש.נ 125% על שעות מעל התקן היומי, ש.נ 150% על משמרות ארוכות) ותוספות חג. השכבה הזו היא הסיבה שהתלוש בדרך כלל יוצא גבוה יותר מהמחשבון.<br><br>המחשבון שימושי כ<b>רצפה</b>: הוא מראה את המינימום שמגיע לפי החוזה. כל עוד התלוש שווה או גבוה ממנו — משלמים לך כראוי.</div>
+  <div class="ledger" style="background:var(--panel-2);padding:12px;border-radius:10px"><div class="lk" style="font-weight:700;margin-bottom:6px">מה לשאול את מחלקת השכר:</div><div class="note" style="margin:0">"לפי החוזה שלי, כל שעה משולמת לפי תעריף — בסיס 100%, ערב 120%, לילה 130%, שבת/חג 150%. בתלוש אני רואה חישוב לפי אחוזי שעות נוספות. אשמח להבין איך מחושב השכר שלי, והאם התעריפים שבחוזה באים לידי ביטוי מלא."</div></div>
+  <div class="note"><b>קריאת ההפרש:</b> אדום/פלוס = המחשבון חישב יותר. כתום/מינוס = בתלוש יותר. ההשוואה המדויקת ביותר היא ברמת הברוטו הכולל, ורצוי בלי לספור ימי היעדרות פעמיים.</div>`;}
+
+function loadConfigToForm(){document.getElementById('cfg-url').value=cfg.url||'';document.getElementById('cfg-key').value=cfg.key||'';}
+function saveConfig(){cfg.url=document.getElementById('cfg-url').value.trim();cfg.key=document.getElementById('cfg-key').value.trim();saveCfgStore();renderCfgWarn();sb=null;if(initSupabase()){alert('החיבור נשמר. אם עדיין לא התחברת, יוצג מסך כניסה.');checkSession();}else{alert('החיבור נשמר.');}}
+async function wipeAll(){if(confirm('לאפס את כל הנתונים בכל החודשים? פעולה בלתי הפיכה.')){
+  if(sb&&currentUser){try{await sb.from('salary_months').delete().eq('user_id',currentUser.id);}catch(e){}}
+  store={months:{}};localStorage.setItem(KEY,JSON.stringify(store));renderAll();renderSavedPayslip();}}
+
+let curYear=+defaultMonth().split('-')[0];
+function renderYearLabel(){document.getElementById('ylabel').innerHTML='שנת <span class="yr">'+curYear+'</span>';}
+function changeYear(dir){curYear+=dir;renderYearLabel();renderAnnual();}
+function renderAnnual(){renderYearLabel();const el=document.getElementById('a-content');
+  let rows='',anyData=false;
+  let tCalc=0,tPay=0,tHours=0,tShifts=0,tAbs=0,tOt125=0,tOt150=0,tLeave=0;
+  for(let m=1;m<=12;m++){
+    const mk=curYear+'-'+String(m).padStart(2,'0');
+    const md=store.months[mk];
+    if(!md||((md.shifts||[]).length===0&&(md.absences||[]).length===0&&!(md.payslip&&md.payslip.data)))continue;
+    anyData=true;
+    const c=computeMonth(mk);
+    const d=md.payslip&&md.payslip.data;
+    const payGross=d&&d.gross?workGrossFromPayslip(d):null;
+    const diff=payGross!==null?(c.calcGross-payGross):null;
+    tCalc+=c.calcGross;tHours+=c.totMin/60;tShifts+=c.count;tAbs+=c.absCount;if(payGross!==null)tPay+=payGross;
+    tOt125+=c.ot125h;tOt150+=c.ot150h;tLeave+=c.leavePay;
+    const dcls=diff===null?'zero':(Math.abs(diff)<1?'zero':(diff>0?'neg':'pos'));
+    const dtxt=diff===null?'—':((diff>0?'+':'')+num(diff));
+    rows+=`<div class="arow" onclick="gotoMonth('${mk}')"><span class="am">${heMonths[m]}</span><span class="ac">${money(c.calcGross)}</span><span class="ap">${payGross!==null?money(payGross):'—'}</span><span class="ad ${dcls}">${dtxt}</span></div>`;
+  }
+  if(!anyData){el.innerHTML=`<div class="empty"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M18 9l-5 5-2-2-4 4"/></svg><div class="t">אין נתונים לשנת ${curYear}</div><div class="s">הוסף משמרות או תלושים כדי לראות סיכום</div></div>`;return;}
+  const totDiff=tPay>0?(tCalc-tPay):null;
+  const tdcls=totDiff===null?'zero':(Math.abs(totDiff)<1?'zero':(totDiff>0?'neg':'pos'));
+  let banner='';
+  if(totDiff!==null){const bcls=Math.abs(totDiff)<1?'match':(totDiff>0?'under':'over');const blabel=Math.abs(totDiff)<1?'תואם':(totDiff>0?'חסר לך השנה':'קיבלת יותר השנה');banner=`<div class="diff-banner ${bcls}"><div class="bt">${blabel} · סה"כ ${curYear}</div><div class="bv">${totDiff>0?'+':''}${num(totDiff)} ₪</div></div>`;}
+  el.innerHTML=`${banner}
+  <div class="card"><div class="card-h">פירוט חודשי · ${curYear}</div>
+    <div class="ahead"><span class="am">חודש</span><span class="ac">מחשבון</span><span class="ap">שכר עבודה</span><span class="ad">הפרש</span></div>
+    ${rows}
+    <div class="arow atot"><span class="am">סה"כ</span><span class="ac">${money(tCalc)}</span><span class="ap">${tPay>0?money(tPay):'—'}</span><span class="ad ${tdcls}">${totDiff!==null?((totDiff>0?'+':'')+num(totDiff)):'—'}</span></div>
+  </div>
+  <div class="summary-grid">
+    <div class="stat"><div class="k">ימי עבודה</div><div class="v">${tShifts}</div></div>
+    <div class="stat accent"><div class="k">שעות</div><div class="v">${tHours.toFixed(0)}</div></div>
+    <div class="stat"><div class="k">ימי היעדרות</div><div class="v">${tAbs}</div></div>
+    <div class="stat"><div class="k">ברוטו צפוי</div><div class="v" style="font-size:16px">${money(tCalc)}</div></div>
+  </div>
+  ${(tPay>0&&tLeave>0)?`<div class="card" style="border-color:var(--amber)"><div class="card-h" style="color:var(--amber)">השוואה מדויקת יותר</div><div class="note" style="margin-bottom:8px">ההפרש למעלה כולל ימי היעדרות שהמחשבון מוסיף בנפרד (${money(tLeave)}), אך בתלוש הם כבר בשכר הבסיס. ללא כפילות זו:</div><div class="ledger"><div class="line"><span class="lk">ברוטו מחשבון (בלי ימי היעדרות)</span><span class="lv">${money(tCalc-tLeave)}</span></div><div class="line"><span class="lk">ברוטו תלוש</span><span class="lv">${money(tPay)}</span></div><div class="line big"><span class="lk">הפרש אמיתי</span><span class="lv" style="color:${Math.abs((tCalc-tLeave)-tPay)<50?'var(--green)':'var(--amber)'}">${((tCalc-tLeave)-tPay)>0?'+':''}${num((tCalc-tLeave)-tPay)}</span></div></div></div>`:''}
+  <div class="note"><b>קריאת ההפרש:</b> אדום/פלוס = המחשבון חישב יותר מהתלוש (ייתכן שחסר לך). כתום/מינוס = בתלוש יותר. הקש על חודש כדי לעבור אליו. שים לב: המחשבון לפי תעריף לשעה (100/120/130/150), התלוש לפי אחוזי ש.נ — ראה הערה בהשוואה.</div>`;}
+function gotoMonth(mk){curMonth=mk;renderMonthLabel();renderAll();document.querySelector('.tab[data-tab="shifts"]').click();}
+
+function renderAll(){renderMonthLabel();renderShifts();if(document.getElementById('diff').classList.contains('on'))renderDiff();if(document.getElementById('payslip').classList.contains('on')){renderSavedPayslip();renderCfgWarn();}}
+document.getElementById('s-date').valueAsDate=new Date();
+renderMonthLabel();renderYearLabel();
+// אתחול: בדיקת חיבור והתחברות. אם אין הגדרות/משתמש — יוצג מסך כניסה.
+// עטוף ב-try כדי ששום כשל באתחול לא יקפיא את שאר האפליקציה.
+try{
+  if(!window.supabase){
+    // ה-SDK לא נטען (למשל בעיית רשת). מציגים הודעה ידידותית במקום קיפאון.
+    const g=document.getElementById('auth-gate');if(g){g.style.display='block';const n=document.getElementById('auth-msg');if(n)n.innerHTML='<div class="cfg-warn">לא ניתן לטעון את רכיב ההתחברות. בדוק חיבור אינטרנט ורענן את הדף.</div>';}
+  }else{
+    checkSession();
+  }
+}catch(e){
+  const g=document.getElementById('auth-gate');if(g)g.style.display='block';
+}
+</script>
+</body>
+</html>
